@@ -1,3 +1,4 @@
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -85,6 +86,12 @@
   .stat{background:var(--card);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow);flex:1;min-width:120px;text-align:center;}
   .stat .n{font-size:28px;font-weight:700;letter-spacing:-.5px;}
   .stat .l{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+  .rd-card{margin-top:16px;}
+  .rd-head{display:flex;justify-content:space-between;align-items:center;margin-bottom:10px;}
+  .rd-title{font-weight:650;font-size:17px;}
+  .rd-bar{position:relative;height:10px;background:#e5e5ea;border-radius:99px;}
+  .rd-bar>i{display:block;height:100%;border-radius:99px;transition:width .4s;}
+  .rd-bar>b{position:absolute;top:-3px;width:2px;height:16px;background:#8a8a8e;transform:translateX(-1px);}
   /* Buttons */
   .btn{
     display:inline-flex;align-items:center;justify-content:center;gap:8px;
@@ -192,6 +199,7 @@
     </div>
     <h2>Your progress</h2>
     <div class="summary" id="home-stats"></div>
+    <div id="home-extra"></div>
     <p class="muted" style="font-size:13px;margin-top:18px;">Real exam (age 18+): 36 questions, 30 correct to pass (83%). All answers verified against the official California Driver's Handbook.</p>
   </section>
 
@@ -224,6 +232,7 @@
       <div class="d">36 random questions, just like the real Class C test. Score 30+ to pass.</div>
       <div class="meta" id="mock-best">Start mock exam →</div>
     </button>
+    <div id="assess-practice" style="margin-top:16px;"></div>
     <h3>Practice by topic</h3>
     <div class="grid topics" id="assess-grid"></div>
   </section>
@@ -519,7 +528,108 @@ const Q = [
 {s:"dui",q:"A DUI conviction can result in:",o:["A warning for a first offense","Fines, license suspension, and possible jail time","No penalty if no one was hurt"],a:1,e:"Even a first DUI can bring fines, license suspension, and jail time."},
 {s:"dui",q:"The best way to avoid driving under the influence is to:",o:["Drink only beer or wine","Use a designated driver, rideshare, or taxi if you've been drinking","Wait about 20 minutes before driving"],a:1,e:"Plan ahead — a sober designated driver or a ride is the only reliable option."},
 {s:"safe",q:"You should adjust your seat and mirrors:",o:["After you start driving","Before you start driving","Only on long trips"],a:1,e:"Set up your seat and mirrors before you begin driving, never while moving."},
-{s:"safe",q:"If your vehicle begins to hydroplane on a wet road, you should:",o:["Brake hard immediately","Ease off the gas and keep the steering wheel steady","Accelerate to regain grip"],a:1,e:"Take your foot off the gas and hold the wheel steady until the tires regain traction — don't brake hard."}
+{s:"safe",q:"If your vehicle begins to hydroplane on a wet road, you should:",o:["Brake hard immediately","Ease off the gas and keep the steering wheel steady","Accelerate to regain grip"],a:1,e:"Take your foot off the gas and hold the wheel steady until the tires regain traction — don't brake hard."},
+{s:"signs",q:"A solid red traffic light means stop. After stopping, you may:",o:["Never turn","Turn right when safe, unless a sign prohibits it","Go straight through"],a:1,e:"You may turn right on red after a full stop, yielding to pedestrians and traffic, unless a 'No Turn On Red' sign is posted."},
+{s:"signs",q:"A red arrow at a traffic signal means:",o:["Turn with caution","Stop and stay stopped until a green signal or arrow appears","Yield"],a:1,e:"A red arrow means stop; do not turn against it until the green appears."},
+{s:"signs",q:"A yellow arrow at a traffic signal means:",o:["The protected turn is ending — prepare to obey the next signal","The turn is now fully protected","Speed up to complete the turn"],a:0,e:"A yellow arrow warns that the protected turn period is ending."},
+{s:"signs",q:"A flashing yellow arrow means you may turn but:",o:["You have the right of way","You must first yield to oncoming traffic and pedestrians","Turning is prohibited"],a:1,e:"A flashing yellow arrow allows the turn only after yielding to oncoming traffic and pedestrians."},
+{s:"signs",q:"A five-sided (pentagon) sign indicates:",o:["A hospital","A school zone or school crossing","A rest stop"],a:1,e:"The pentagon shape marks school zones and school crossings."},
+{s:"signs",q:"A round sign indicates:",o:["A stop ahead","A railroad crossing ahead","A speed limit"],a:1,e:"A round sign warns of a railroad crossing ahead."},
+{s:"signs",q:"A green highway sign provides:",o:["Warnings of hazards","Guidance and directions, such as distances and destinations","Rules you must obey"],a:1,e:"Green signs give guide information — directions, distances, and destinations."},
+{s:"signs",q:"A blue highway sign indicates:",o:["Construction","Motorist services such as gas, food, and lodging","A warning"],a:1,e:"Blue signs point to motorist services."},
+{s:"signs",q:"An orange sign indicates:",o:["Recreation areas","Construction and maintenance warnings","Motorist services"],a:1,e:"Orange marks construction and maintenance zones."},
+{s:"signs",q:"A brown sign indicates:",o:["A hazard","Recreational or cultural areas, such as parks","Road work"],a:1,e:"Brown signs mark recreational and cultural interest areas."},
+{s:"signs",q:"A single broken white line between lanes means:",o:["No lane changes allowed","You may change lanes when it is safe","Oncoming traffic"],a:1,e:"A broken white line separates same-direction lanes and permits lane changes when safe."},
+{s:"signs",q:"Two solid white lines between lanes mean:",o:["Passing is encouraged","You must not cross them","Two-way traffic"],a:1,e:"Double solid white lines mark a boundary you must not cross, such as beside some carpool lanes."},
+{s:"signs",q:"A steady upraised hand or 'DON'T WALK' pedestrian signal means a pedestrian should:",o:["Begin crossing","Not start to cross","Cross quickly"],a:1,e:"A steady upraised hand or 'DON'T WALK' means do not enter the crosswalk."},
+{s:"signs",q:"A downward-pointing triangle (YIELD) sign means:",o:["Come to a full stop always","Slow down and give the right-of-way, stopping if necessary","Merge at full speed"],a:1,e:"YIELD means give the right-of-way to traffic and pedestrians, stopping if needed."},
+{s:"signs",q:"A diamond-shaped sign showing a bicycle means:",o:["Bicycles are banned","Watch for bicyclists sharing the road","Bike parking ahead"],a:1,e:"It warns drivers to watch for bicyclists."},
+{s:"signs",q:"When a traffic signal turns green, you should:",o:["Go immediately without looking","Proceed when safe, yielding to anyone still in the intersection","Speed up"],a:1,e:"A green light means go, but only after yielding to anyone still clearing the intersection."},
+{s:"signs",q:"White regulatory signs (such as SPEED LIMIT) tell you:",o:["Suggestions","Laws you must obey","General directions"],a:1,e:"Regulatory signs state laws you must follow."},
+{s:"signs",q:"A 'WRONG WAY' or 'DO NOT ENTER' sign means:",o:["Enter with caution","Do not enter — you would be facing traffic the wrong way","Yield then enter"],a:1,e:"Stop and do not enter; you are about to travel against traffic."},
+{s:"signs",q:"Rumble strips (grooves) along the road edge are meant to:",o:["Slow all traffic","Alert you by noise and vibration that you are drifting out of your lane","Mark parking spaces"],a:1,e:"Rumble strips warn you that you are leaving your lane."},
+{s:"signs",q:"A flashing red beacon over an intersection means:",o:["Go","Stop, then proceed when safe","Slow down only"],a:1,e:"A flashing red beacon means stop, then proceed when it is clear."},
+{s:"row",q:"Before turning right on a red light, you must:",o:["Slow but need not stop","Come to a complete stop and yield, unless a sign prohibits the turn","Turn only on a green arrow"],a:1,e:"A right on red requires a full stop and yielding first, unless prohibited by a sign."},
+{s:"row",q:"When a traffic signal is completely dark (not working), you should treat the intersection as:",o:["A green light","An all-way stop","A yield"],a:1,e:"Treat a dead signal as an all-way stop."},
+{s:"row",q:"You may not follow closer than how many feet behind an emergency vehicle using its siren or lights?",o:["100 feet","300 feet","500 feet"],a:1,e:"Stay at least 300 feet back from a responding emergency vehicle."},
+{s:"row",q:"After one emergency vehicle passes, you should:",o:["Speed up immediately","Watch for additional emergency vehicles before pulling back out","Follow it closely"],a:1,e:"More emergency vehicles may follow — make sure the way is clear before moving."},
+{s:"row",q:"The responsibility for merging safely onto a freeway belongs to:",o:["Traffic already on the freeway","The driver who is merging","Whoever is going faster"],a:1,e:"The merging driver must adjust speed and yield to traffic already on the freeway."},
+{s:"row",q:"A pedestrian steps into an unmarked crosswalk at an intersection. You must:",o:["Proceed; they must wait","Yield and stop if necessary","Sound your horn"],a:1,e:"Pedestrians have the right-of-way at marked and unmarked crosswalks."},
+{s:"row",q:"At a four-way stop, the first vehicle to come to a complete stop:",o:["Must wait for the others","Should proceed first","Yields to everyone"],a:1,e:"The first to stop goes first; if two stop together, the one on the right goes."},
+{s:"row",q:"When you approach a school crossing guard holding a stop sign, you must:",o:["Slow down only","Stop and stay stopped until the guard signals you on","Proceed carefully"],a:1,e:"Obey the crossing guard and remain stopped until directed to proceed."},
+{s:"row",q:"If an emergency vehicle approaches while you are in a roundabout, you should:",o:["Stop inside the circle","Exit the roundabout first, then pull over","Speed up around it"],a:1,e:"Do not stop in the circle — continue to your exit, then pull over."},
+{s:"row",q:"When merging or changing lanes, you must:",o:["Force your way in","Yield to vehicles already in the lane you want","Expect others to make room"],a:1,e:"Yield to traffic already occupying the lane you are moving into."},
+{s:"speed",q:"On a two-lane undivided highway, the maximum speed limit (unless posted otherwise) is generally:",o:["55 mph","65 mph","70 mph"],a:0,e:"Two-lane undivided highways are generally 55 mph unless otherwise posted."},
+{s:"speed",q:"When towing a trailer or another vehicle, your maximum speed is generally:",o:["55 mph","65 mph","The same as cars"],a:0,e:"Vehicles towing trailers are limited to 55 mph in California."},
+{s:"speed",q:"In fog or heavy smoke, you should:",o:["Use high beams and keep your speed","Slow down and use low beams","Speed up to get through it"],a:1,e:"Slow down and use low beams; high beams reflect off fog and reduce visibility."},
+{s:"speed",q:"On ice or packed snow, you should:",o:["Keep your normal speed","Slow down and increase your following distance","Brake hard frequently"],a:1,e:"Reduce speed and leave extra room; slippery surfaces greatly increase stopping distance."},
+{s:"speed",q:"Taking part in a speed contest (racing) on a public road is:",o:["A minor ticket","Illegal and can lead to license suspension and jail","Allowed late at night"],a:1,e:"Street racing is a serious offense that can bring suspension and jail time."},
+{s:"speed",q:"At night you should drive slowly enough that you can:",o:["Match the daytime speed limit","Stop within the distance lit by your headlights","See farther by speeding up"],a:1,e:"Never overdrive your headlights — be able to stop within the lit distance."},
+{s:"speed",q:"On a freeway exit ramp, you should:",o:["Keep your freeway speed","Slow to the posted ramp speed, checking your speedometer","Accelerate"],a:1,e:"Ramps often have much lower safe speeds — slow down and check your speedometer."},
+{s:"speed",q:"In heavy traffic, rain, or fog, a safe speed is usually:",o:["The posted limit","Slower than the posted limit","Faster, to clear the area"],a:1,e:"The Basic Speed Law requires driving slower than the posted limit when conditions demand."},
+{s:"speed",q:"You should slow down:",o:["Only when you see a police car","On wet or icy roads, in fog, in curves, and in heavy traffic","Never below the posted limit"],a:1,e:"Adjust your speed down for any condition that reduces traction or visibility."},
+{s:"speed",q:"As your speed increases, your stopping distance:",o:["Stays the same","Increases significantly","Decreases"],a:1,e:"Higher speed sharply increases the distance needed to stop."},
+{s:"lanes",q:"A center left-turn lane (broken inner line, solid outer line) may be used only to:",o:["Pass slower traffic","Prepare for or make a left turn or permitted U-turn","Travel as a normal lane"],a:1,e:"It is only for preparing or making left turns or U-turns — not for passing or through travel."},
+{s:"lanes",q:"You may travel in a center left-turn lane for no more than:",o:["100 feet","200 feet","500 feet"],a:1,e:"California limits travel in a center left-turn lane to 200 feet."},
+{s:"lanes",q:"Large trucks have big blind spots called 'No-Zones.' You should:",o:["Assume the trucker can see you","Avoid lingering directly beside or close behind a truck","Tailgate so they notice you"],a:1,e:"If you stay in a truck's blind spots, the driver cannot see you — move through them."},
+{s:"lanes",q:"If you cannot see a truck driver's side mirrors, it means:",o:["The driver can still see you","The driver probably cannot see you","Nothing important"],a:1,e:"A good rule: if you cannot see the truck's mirrors, the trucker cannot see you."},
+{s:"lanes",q:"Large trucks turning right often:",o:["Turn sharply from the right edge","Swing wide to the left first — never squeeze between the truck and the curb","Turn from the left lane only"],a:1,e:"Trucks swing wide to turn; do not try to pass on the right as they turn."},
+{s:"lanes",q:"When passing a large truck, you should return to your lane only when:",o:["You clear its front bumper","You can see the whole truck in your rear-view mirror","You are alongside it"],a:1,e:"Wait until the entire truck is visible in your mirror before pulling back in."},
+{s:"lanes",q:"Slower traffic on a multi-lane freeway should:",o:["Stay in the far-left lane","Keep to the right and use left lanes only for passing","Use the shoulder"],a:1,e:"Keep right except to pass; the left lane is for passing."},
+{s:"lanes",q:"When making a right turn, you should position your vehicle:",o:["In the middle of the road","Close to the right-hand curb or edge before turning","Swung wide to the left"],a:1,e:"Approach a right turn from as far right as is safe."},
+{s:"lanes",q:"To make a left turn from a two-way street, you should begin from:",o:["The right lane","The lane nearest the center line","Any available lane"],a:1,e:"Start left turns from the lane just to the right of the center line."},
+{s:"lanes",q:"A motorcyclist is entitled to:",o:["Half a lane","A full lane width","Only the shoulder"],a:1,e:"Motorcycles may use a full lane; do not crowd or share it."},
+{s:"lanes",q:"Weaving in and out of freeway lanes to move faster is:",o:["Efficient","Dangerous and raises collision risk","Recommended in traffic"],a:1,e:"Frequent lane changes increase risk with little time saved."},
+{s:"lanes",q:"Before changing lanes you should:",o:["Just check your mirror","Signal, check mirrors, and look over your shoulder at the blind spot","Move over quickly"],a:1,e:"Signal, check your mirrors, and turn your head to clear the blind spot."},
+{s:"lanes",q:"You may pass on the right only when:",o:["Never","There is room and the vehicle ahead is turning left, or the road has two or more lanes each way","Anytime traffic is slow"],a:1,e:"Passing on the right is allowed only in limited, safe situations."},
+{s:"parking",q:"You may not park within how many feet of a crosswalk at a corner?",o:["10 feet","20 feet","30 feet"],a:1,e:"Keep at least 20 feet from a crosswalk at an intersection."},
+{s:"parking",q:"Parking spaces marked with the wheelchair symbol are for:",o:["Anyone parking briefly","Only vehicles displaying a disabled placard or plate","Compact cars"],a:1,e:"Accessible spaces require a valid disabled placard or plate."},
+{s:"parking",q:"When parking facing uphill with no curb, turn your front wheels:",o:["Toward the center of the road","Toward the edge of the road, so it rolls away from traffic","Straight ahead"],a:1,e:"With no curb, aim the wheels so a rolling car heads off the road, away from traffic."},
+{s:"parking",q:"It is illegal to park:",o:["On a quiet residential street","In a bike lane","In a shopping-center lot"],a:1,e:"Parking in a bike lane is prohibited."},
+{s:"parking",q:"You may not park in front of a:",o:["Public or private driveway","Wide street","Parking structure"],a:1,e:"Never block a driveway."},
+{s:"parking",q:"When you leave a vehicle parked on a hill, you should always:",o:["Leave it running","Set the parking brake (and leave a manual in gear)","Leave a window open"],a:1,e:"Set the parking brake and, for a manual transmission, leave it in gear as a backup."},
+{s:"parking",q:"Leaving a child under age 6 alone in a vehicle, without someone at least 12 present, is:",o:["Fine if brief","Illegal when it poses a risk to the child","Only illegal at night"],a:1,e:"California law prohibits leaving a young child unattended in risky conditions without a supervisor 12 or older."},
+{s:"parking",q:"When parking downhill next to a curb, your front wheels should point:",o:["Away from the curb","Toward the curb","Straight ahead"],a:1,e:"Downhill: turn wheels toward the curb so it blocks a rolling car."},
+{s:"parking",q:"You may not stop, stand, or park:",o:["In a marked bus stop or blocking a fire station driveway","On a wide street","In a public lot"],a:0,e:"Bus stops and fire-station entrances must be kept clear."},
+{s:"parking",q:"A curb with no paint and no posted signs generally means:",o:["No parking ever","Parking may be allowed — but always check posted signs","Loading only"],a:1,e:"Unmarked curbs may allow parking, but always check posted signs and local rules."},
+{s:"dui",q:"A DUI conviction may require the driver to install a(n):",o:["GPS tracker","Ignition interlock device (IID)","New transmission"],a:1,e:"Courts and the DMV can require an ignition interlock device after a DUI."},
+{s:"dui",q:"Drinking coffee, taking a cold shower, or exercising after drinking will:",o:["Sober you up quickly","Not lower your blood alcohol level — only time does","Speed up your reactions"],a:1,e:"Only time reduces BAC; nothing else speeds it up."},
+{s:"dui",q:"Driving while impaired by cannabis (marijuana) is:",o:["Legal if you feel okay","Illegal, and open cannabis containers are prohibited in the vehicle","Only illegal for minors"],a:1,e:"It is illegal to drive impaired by cannabis, and open containers are not allowed in the passenger area."},
+{s:"dui",q:"A DUI conviction generally stays on your California driving record for:",o:["1 year","5 years","10 years"],a:2,e:"A DUI remains on your driving record for 10 years in California."},
+{s:"dui",q:"The safest plan if you intend to drink is to:",o:["Drink only beer","Arrange a designated driver or a ride in advance","Plan to wait about 20 minutes"],a:1,e:"Line up a sober ride before you drink."},
+{s:"dui",q:"Evidence that a driver is impaired can come from:",o:["A chemical test only","A chemical test together with the officer's observations","Nothing without a warrant"],a:1,e:"Both chemical-test results and an officer's observations can establish impairment."},
+{s:"dui",q:"Zero tolerance means a driver under 21 can lose their license for a BAC as low as:",o:["0.01%","0.05%","0.08%"],a:0,e:"Under-21 drivers face suspension at 0.01% BAC or higher."},
+{s:"dui",q:"Combining alcohol with prescription or over-the-counter medicine:",o:["Is safe if the medicine is prescribed","Can multiply impairment and is dangerous when driving","Only affects older drivers"],a:1,e:"Mixing alcohol and medications can dangerously increase impairment."},
+{s:"safe",q:"If you start to skid on a slippery surface, ease off the gas, stop braking, and:",o:["Turn the wheel opposite the skid","Turn the steering wheel in the direction of the skid","Brake hard"],a:1,e:"The handbook says to steer in the direction of the skid until you regain control."},
+{s:"safe",q:"To help prevent skidding, you should:",o:["Brake hard in curves","Slow before curves and avoid quick stops and fast turns","Accelerate through curves"],a:1,e:"Smooth, slow driving and early braking help prevent skids."},
+{s:"safe",q:"If your right wheels drift onto the dirt shoulder, you should:",o:["Brake hard and jerk the wheel back","Ease off the gas, hold the wheel straight, then steer back gently after slowing","Speed up"],a:1,e:"Do not jerk back at speed — slow first, then ease back onto the pavement."},
+{s:"safe",q:"If your accelerator sticks while driving, you should:",o:["Shut off the engine at highway speed","Shift to neutral, brake, and steer to the side of the road","Pump the gas pedal"],a:1,e:"Shift to neutral to cut power to the wheels, brake, and pull over safely."},
+{s:"safe",q:"If a tire blows out, you should:",o:["Brake hard immediately","Hold the wheel firmly, ease off the gas, and slow gradually","Accelerate to regain control"],a:1,e:"Grip the wheel, let off the gas, and slow smoothly before pulling over."},
+{s:"safe",q:"If your vehicle stalls on railroad tracks and a train is approaching, you should:",o:["Stay and try to restart it","Get everyone out and away from the tracks immediately","Try to push the vehicle off"],a:1,e:"Abandon the vehicle at once and move away from the tracks, toward the oncoming train and off to the side."},
+{s:"safe",q:"Fines for traffic violations in a work zone can be:",o:["Around $100","$1,000 or more","Just a warning"],a:1,e:"Work-zone fines are steep — $1,000 or more."},
+{s:"safe",q:"In a work zone you should:",o:["Speed up to clear it","Slow down, merge early, and watch for workers","Change lanes at the last moment"],a:1,e:"Slow down, merge early, and stay alert for workers and equipment."},
+{s:"safe",q:"California's minimum liability insurance for property damage is:",o:["$5,000","$15,000","$25,000"],a:0,e:"The minimum property-damage coverage is $5,000."},
+{s:"safe",q:"California's minimum liability insurance for a single injury or death is:",o:["$5,000","$15,000","$30,000"],a:1,e:"The minimum is $15,000 for one person's injury or death ($30,000 for more than one)."},
+{s:"safe",q:"You must show evidence of insurance (financial responsibility):",o:["Only when buying a vehicle","When a peace officer asks, or after a collision","Never"],a:1,e:"Carry proof of insurance and show it when requested or after a crash."},
+{s:"safe",q:"Traffic convictions and collisions generally stay on your driving record for at least:",o:["12 months","36 months","6 months"],a:1,e:"They remain for at least 36 months, sometimes longer."},
+{s:"safe",q:"Accumulating too many points under the Negligent Operator Treatment System can result in:",o:["A cash reward","Suspension or revocation of your driving privilege","No consequences"],a:1,e:"Too many points leads to warnings and then suspension or revocation."},
+{s:"safe",q:"The best response to feeling drowsy behind the wheel is to:",o:["Open a window and continue","Stop and rest, or let someone else drive","Drink an energy drink and push on"],a:1,e:"Rest is the only real fix for drowsiness — stop or switch drivers."},
+{s:"safe",q:"To reduce the chance of hydroplaning in the rain, you should:",o:["Drive faster","Slow down and keep tires properly inflated with good tread","Use cruise control"],a:1,e:"Lower speed and good tires reduce hydroplaning; avoid cruise control on wet roads."},
+{s:"safe",q:"At night, to avoid glare from oncoming high beams, look toward:",o:["The oncoming headlights","The right edge of your lane","Your dashboard"],a:1,e:"Glance to the right edge of your lane to avoid being blinded."},
+{s:"safe",q:"You should sound your horn:",o:["To express frustration","Only to warn others and help avoid collisions","Frequently at night"],a:1,e:"Use the horn only to alert others and prevent crashes."},
+{s:"safe",q:"If another driver is tailgating you, the safest response is to:",o:["Brake to warn them","Move over or slow gradually to let them pass","Speed up"],a:1,e:"Let a tailgater get ahead of you — do not brake-check or race."},
+{s:"safe",q:"With anti-lock brakes (ABS), in a hard stop you should:",o:["Pump the pedal","Apply firm, steady pressure and keep steering","Release the brakes"],a:1,e:"With ABS, press firmly and steadily and steer — do not pump."},
+{s:"safe",q:"When approaching a railroad crossing, you should:",o:["Speed up to beat any train","Slow down, look, listen, and be ready to stop","Always come to a full stop"],a:1,e:"Slow, look, and listen; be prepared to stop for a train."},
+{s:"safe",q:"You should never stop your vehicle:",o:["At a green light","On railroad tracks","In a parking lot"],a:1,e:"Never stop on railroad tracks, even in heavy traffic."},
+{s:"safe",q:"On an undivided road, when a school bus flashes red lights and children are loading, drivers must:",o:["Slow down only","Stop in both directions","Pass carefully"],a:1,e:"On an undivided road, traffic in both directions must stop for a school bus with flashing red lights."},
+{s:"safe",q:"On a divided highway, drivers moving in the opposite direction from a stopped school bus (across a divider) must:",o:["Always stop","Not stop, because a divider separates them","Slow to 10 mph"],a:1,e:"A raised divider or median exempts oncoming traffic from stopping."},
+{s:"safe",q:"You should increase your following distance beyond three seconds when:",o:["The road is dry and clear","It is raining or foggy, or you are behind a motorcycle or large truck","Traffic is light"],a:1,e:"Add following time in poor conditions or behind vehicles that may stop unpredictably."},
+{s:"safe",q:"Seat belts must be worn by:",o:["Only the driver","The driver and every passenger, on every trip","Only front-seat riders"],a:1,e:"California law requires the driver and all passengers to be belted."},
+{s:"safe",q:"When you see brake lights or hazard lights ahead, you should:",o:["Keep your speed","Slow down and be ready to stop","Change lanes quickly"],a:1,e:"Anticipate trouble — ease off and prepare to stop."},
+{s:"safe",q:"A good space cushion around your vehicle gives you:",o:["A smoother ride","Room and time to react to hazards","Better fuel economy"],a:1,e:"Space on all sides gives you time to see and avoid problems."},
+{s:"safe",q:"The single most important thing you can do to protect yourself in a crash is:",o:["Drive a large car","Wear your seat belt","Keep the radio low"],a:1,e:"Seat belts are the top protection in a collision."},
+{s:"safe",q:"If you are involved in a collision, you should first:",o:["Drive away","Stop, check for injuries, and move to safety if possible","Post about it online"],a:1,e:"Stop, help anyone injured, and get to a safe spot; then exchange information and report as required."},
+{s:"safe",q:"Cruise control should be avoided:",o:["On dry highways","On wet, icy, or slippery roads","On long trips"],a:1,e:"Cruise control can reduce your control on slippery roads — avoid it there."}
 ];
 
 /* ---------------- STATE + STORAGE ---------------- */
@@ -527,6 +637,8 @@ const KEY="caldmv_progress_v1";
 let store = load();
 function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
 function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+function addMissed(q){store.missed=store.missed||[];if(!store.missed.includes(q)){store.missed.push(q);save();}}
+function removeMissed(q){if(store.missed){store.missed=store.missed.filter(x=>x!==q);save();}}
 
 function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
 
@@ -539,9 +651,9 @@ function go(v){
     document.getElementById("tab-"+t).classList.toggle("active",on);
   });
   window.scrollTo(0,0);
-  if(v==="home")renderHome();
+  if(v==="home"){renderHome();renderExtras();}
   if(v==="learn")renderLearn();
-  if(v==="assess")renderAssess();
+  if(v==="assess"){renderAssess();renderExtras();}
 }
 
 /* ---------------- HOME ---------------- */
@@ -550,7 +662,7 @@ function renderHome(){
   const mock = store.mock_best;
   const el=document.getElementById("home-stats");
   el.innerHTML=`
-    <div class="stat"><div class="n">100</div><div class="l">Questions</div></div>
+    <div class="stat"><div class="n">${Q.length}</div><div class="l">Questions</div></div>
     <div class="stat"><div class="n">7</div><div class="l">Topics</div></div>
     <div class="stat"><div class="n">${done}/7</div><div class="l">Topics quizzed</div></div>
     <div class="stat"><div class="n">${mock?mock+"/36":"—"}</div><div class="l">Best mock score</div></div>`;
@@ -603,6 +715,37 @@ function startQuiz(secId){
   document.getElementById("res-retry").onclick=()=>startQuiz(secId);
   go("quiz"); renderQ();
 }
+function startPractice(){
+  const missed=store.missed||[];
+  const list=Q.filter(q=>missed.includes(q.q));
+  if(!list.length){ alert("No missed questions yet — take a quiz and any you miss will collect here."); return; }
+  quiz={mode:"practice", title:"🎯 Practice My Mistakes", items:buildRound(shuffle(list)), i:0, correct:0, wrong:[]};
+  document.getElementById("res-retry").onclick=startPractice;
+  go("quiz"); renderQ();
+}
+function renderExtras(){
+  const missed=(store.missed||[]).length;
+  const he=document.getElementById("home-extra");
+  if(he){
+    const hist=store.mock_history||[]; const last5=hist.slice(-5);
+    let r;
+    if(!last5.length){
+      r=`<div class="rd-head"><span class="rd-title">Readiness</span><span class="muted" style="font-size:13px;">No mock exams yet</span></div><div class="muted" style="font-size:14px;">Take a full mock exam and your rolling average will appear here so you know when you're ready for the DMV.</div>`;
+    } else {
+      const avg=Math.round(last5.reduce((s,x)=>s+x.pct,0)/last5.length);
+      const st= avg>=83?["Ready to test","var(--green)"]: avg>=70?["Almost there","#e8a33d"]:["Keep practicing","var(--red)"];
+      r=`<div class="rd-head"><span class="rd-title">Readiness</span><span style="color:${st[1]};font-weight:700;">${st[0]}</span></div><div class="rd-bar"><i style="width:${avg}%;background:${st[1]};"></i><b style="left:83%;"></b></div><div class="muted" style="font-size:13px;margin-top:8px;">Averaging <b>${avg}%</b> over your last ${last5.length} mock exam${last5.length>1?"s":""} · pass line 83%</div>`;
+    }
+    const pr = missed>0 ? `<button class="btn ghost btn-sm" style="margin-top:14px;" onclick="startPractice()">🎯 Practice my ${missed} missed question${missed>1?"s":""} →</button>` : "";
+    he.innerHTML=`<div class="card static rd-card">${r}${pr}</div>`;
+  }
+  const ap=document.getElementById("assess-practice");
+  if(ap){
+    ap.innerHTML = missed>0
+      ? `<button class="card" style="background:linear-gradient(135deg,#fff4e8,#fff9f2);" onclick="startPractice()"><div class="ic">🎯</div><div class="t">Practice My Mistakes</div><div class="d">${missed} question${missed>1?"s":""} you've missed. They leave the list once you answer them correctly here.</div><div class="meta">Start practice →</div></button>`
+      : `<div class="card static" style="opacity:.7;"><div class="ic">🎯</div><div class="t">Practice My Mistakes</div><div class="d">No missed questions yet — take any quiz and the ones you miss will collect here to drill later.</div></div>`;
+  }
+}
 function startMock(){
   const items = buildRound(shuffle(Q).slice(0,36));
   quiz={mode:"mock", title:"🏁 Full Mock Exam", items, i:0, correct:0, wrong:[]};
@@ -639,11 +782,13 @@ function answer(i){
   const exp=document.getElementById("quiz-explain");
   if(chosen.correct){
     quiz.correct++;
+    if(quiz.mode==="practice") removeMissed(it.q);
     exp.className="explain ok show";
     exp.innerHTML=`<span class="lbl">✓ Correct</span>${it.e}`;
   }else{
     const right=it.opts.find(o=>o.correct).text;
     quiz.wrong.push({q:it.q,chosen:chosen.text,right,e:it.e});
+    addMissed(it.q);
     exp.className="explain no show";
     exp.innerHTML=`<span class="lbl">✗ Not quite</span>The correct answer is: <b>${right}</b>.<br>${it.e}`;
   }
@@ -660,7 +805,7 @@ function finishQuiz(){
   const total=quiz.items.length, c=quiz.correct;
   const pct=Math.round(c/total*100);
   const pass = quiz.mode==="mock" ? c>=30 : pct>=80;
-  if(quiz.mode==="mock"){ store.mock_best=Math.max(store.mock_best||0,c); }
+  if(quiz.mode==="mock"){ store.mock_best=Math.max(store.mock_best||0,c); store.mock_history=store.mock_history||[]; store.mock_history.push({c,total,pct,ts:Date.now()}); if(store.mock_history.length>20) store.mock_history=store.mock_history.slice(-20); }
   else { const prev=store["sec_"+quiz.secId]; if(!prev||c>prev.c) store["sec_"+quiz.secId]={c,t:total}; }
   save();
   const R=64, circ=2*Math.PI*R, col=pass?"var(--green)":"var(--red)";
