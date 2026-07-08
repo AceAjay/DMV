@@ -1,0 +1,691 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CalDMV Prep — California Driver License Study</title>
+<style>
+  :root{
+    --bg:#f5f5f7;
+    --card:#ffffff;
+    --ink:#1d1d1f;
+    --sub:#6e6e73;
+    --line:#e3e3e6;
+    --blue:#0071e3;
+    --blue-dark:#0060c0;
+    --green:#34a853;
+    --green-bg:#e7f6ec;
+    --red:#e5484d;
+    --red-bg:#fdecec;
+    --shadow:0 4px 20px rgba(0,0,0,.06);
+    --shadow-h:0 8px 30px rgba(0,0,0,.10);
+  }
+  *{box-sizing:border-box;-webkit-tap-highlight-color:transparent;}
+  html,body{margin:0;padding:0;}
+  body{
+    font-family:-apple-system,BlinkMacSystemFont,"SF Pro Display","SF Pro Text","Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    background:var(--bg);
+    color:var(--ink);
+    line-height:1.5;
+    -webkit-font-smoothing:antialiased;
+  }
+  /* Nav */
+  .nav{
+    position:sticky;top:0;z-index:50;
+    background:rgba(245,245,247,.8);
+    backdrop-filter:saturate(180%) blur(20px);
+    -webkit-backdrop-filter:saturate(180%) blur(20px);
+    border-bottom:1px solid var(--line);
+  }
+  .nav-inner{max-width:920px;margin:0 auto;padding:0 20px;height:52px;display:flex;align-items:center;gap:22px;}
+  .brand{font-weight:600;font-size:17px;letter-spacing:-.2px;cursor:pointer;display:flex;align-items:center;gap:8px;}
+  .brand .dot{width:20px;height:20px;border-radius:6px;background:var(--blue);display:inline-flex;align-items:center;justify-content:center;color:#fff;font-size:12px;font-weight:700;}
+  .nav-tabs{display:flex;gap:6px;margin-left:auto;}
+  .nav-tabs button{
+    border:0;background:none;font-family:inherit;font-size:14px;color:var(--sub);
+    padding:6px 12px;border-radius:8px;cursor:pointer;font-weight:500;transition:.15s;
+  }
+  .nav-tabs button:hover{color:var(--ink);}
+  .nav-tabs button.active{color:var(--blue);background:rgba(0,113,227,.1);}
+  /* Layout */
+  .wrap{max-width:920px;margin:0 auto;padding:0 20px 80px;}
+  .view{display:none;animation:fade .35s ease;}
+  .view.active{display:block;}
+  @keyframes fade{from{opacity:0;transform:translateY(6px);}to{opacity:1;transform:none;}}
+  h1{font-size:40px;letter-spacing:-1px;font-weight:700;margin:.4em 0 .1em;}
+  h2{font-size:26px;letter-spacing:-.5px;font-weight:650;margin:1.2em 0 .4em;}
+  h3{font-size:19px;font-weight:600;margin:1.4em 0 .3em;letter-spacing:-.2px;}
+  p.lead{font-size:19px;color:var(--sub);margin:.2em 0 1.4em;max-width:640px;}
+  .muted{color:var(--sub);}
+  /* Hero */
+  .hero{text-align:center;padding:56px 0 28px;}
+  .hero h1{font-size:52px;}
+  .hero .tag{color:var(--sub);font-size:20px;max-width:560px;margin:0 auto 8px;}
+  /* Cards */
+  .grid{display:grid;gap:16px;}
+  .grid.two{grid-template-columns:1fr 1fr;}
+  .grid.topics{grid-template-columns:1fr 1fr;}
+  .card{
+    background:var(--card);border-radius:18px;padding:22px;box-shadow:var(--shadow);
+    border:1px solid rgba(0,0,0,.02);transition:.2s;cursor:pointer;text-align:left;
+    width:100%;font-family:inherit;color:inherit;display:block;
+  }
+  .card.static{cursor:default;}
+  button.card{border:1px solid rgba(0,0,0,.02);}
+  .card:not(.static):hover{transform:translateY(-3px);box-shadow:var(--shadow-h);}
+  .card .ic{font-size:26px;margin-bottom:6px;}
+  .card .t{font-size:18px;font-weight:600;letter-spacing:-.2px;}
+  .card .d{color:var(--sub);font-size:14px;margin-top:4px;}
+  .card .meta{color:var(--blue);font-size:13px;font-weight:600;margin-top:12px;}
+  .big-cta{display:flex;gap:16px;flex-direction:column;justify-content:space-between;min-height:150px;}
+  .big-cta.learn{background:linear-gradient(135deg,#eaf3ff,#f4f9ff);}
+  .big-cta.assess{background:linear-gradient(135deg,#eafaf0,#f4fef8);}
+  /* Progress summary */
+  .summary{display:flex;gap:14px;flex-wrap:wrap;margin-top:8px;}
+  .stat{background:var(--card);border-radius:14px;padding:14px 18px;box-shadow:var(--shadow);flex:1;min-width:120px;text-align:center;}
+  .stat .n{font-size:28px;font-weight:700;letter-spacing:-.5px;}
+  .stat .l{font-size:12px;color:var(--sub);text-transform:uppercase;letter-spacing:.4px;margin-top:2px;}
+  /* Buttons */
+  .btn{
+    display:inline-flex;align-items:center;justify-content:center;gap:8px;
+    background:var(--blue);color:#fff;border:0;border-radius:980px;
+    padding:12px 26px;font-size:16px;font-weight:500;font-family:inherit;cursor:pointer;transition:.15s;
+  }
+  .btn:hover{background:var(--blue-dark);}
+  .btn.ghost{background:rgba(0,113,227,.1);color:var(--blue);}
+  .btn.ghost:hover{background:rgba(0,113,227,.18);}
+  .btn.gray{background:#e8e8ed;color:var(--ink);}
+  .btn.gray:hover{background:#dcdce1;}
+  .btn:disabled{opacity:.4;cursor:default;}
+  .btn-sm{padding:9px 18px;font-size:14px;}
+  .back{background:none;border:0;color:var(--blue);font-size:15px;font-family:inherit;cursor:pointer;padding:16px 0 4px;display:inline-flex;align-items:center;gap:4px;}
+  /* Cheat sheet */
+  .sheet h3{margin-top:1.6em;}
+  .sheet ul{padding-left:0;list-style:none;margin:.4em 0;}
+  .sheet li{position:relative;padding:8px 0 8px 30px;border-bottom:1px solid var(--line);}
+  .sheet li:before{content:"";position:absolute;left:6px;top:16px;width:7px;height:7px;border-radius:50%;background:var(--blue);}
+  .sheet li b{font-weight:600;}
+  .pill{display:inline-block;background:var(--green-bg);color:var(--green);font-weight:600;border-radius:6px;padding:1px 7px;font-size:.92em;}
+  .keyfact{background:#fff8e6;border:1px solid #f2e2b0;border-radius:12px;padding:12px 16px;margin:14px 0;font-size:15px;}
+  /* Quiz */
+  .qtop{display:flex;align-items:center;gap:14px;margin:18px 0 10px;}
+  .bar{flex:1;height:8px;background:#e5e5ea;border-radius:99px;overflow:hidden;}
+  .bar > i{display:block;height:100%;background:var(--blue);width:0;transition:width .3s;}
+  .qcount{font-size:14px;color:var(--sub);font-weight:600;white-space:nowrap;}
+  .qcard{background:var(--card);border-radius:18px;padding:26px;box-shadow:var(--shadow);}
+  .qtext{font-size:22px;font-weight:600;letter-spacing:-.3px;margin-bottom:20px;line-height:1.35;}
+  .opts{display:flex;flex-direction:column;gap:10px;}
+  .opt{
+    text-align:left;background:#f5f5f7;border:2px solid transparent;border-radius:14px;
+    padding:15px 18px;font-size:16px;font-family:inherit;color:var(--ink);cursor:pointer;transition:.15s;
+    display:flex;align-items:center;gap:12px;
+  }
+  .opt:hover{background:#ececf1;}
+  .opt .k{width:26px;height:26px;border-radius:50%;background:#fff;border:1.5px solid #c9c9cf;display:inline-flex;align-items:center;justify-content:center;font-size:13px;font-weight:700;flex-shrink:0;color:var(--sub);}
+  .opt.correct{background:var(--green-bg);border-color:var(--green);}
+  .opt.correct .k{background:var(--green);border-color:var(--green);color:#fff;}
+  .opt.wrong{background:var(--red-bg);border-color:var(--red);}
+  .opt.wrong .k{background:var(--red);border-color:var(--red);color:#fff;}
+  .opt.locked{cursor:default;}
+  .opt.dim{opacity:.55;}
+  .explain{margin-top:18px;border-radius:14px;padding:16px 18px;font-size:15px;display:none;animation:fade .3s;}
+  .explain.show{display:block;}
+  .explain.ok{background:var(--green-bg);}
+  .explain.no{background:var(--red-bg);}
+  .explain .lbl{font-weight:700;display:block;margin-bottom:3px;}
+  .explain .src{color:var(--sub);font-size:13px;margin-top:8px;display:block;}
+  .qfoot{display:flex;justify-content:space-between;align-items:center;margin-top:20px;gap:12px;}
+  /* Results */
+  .result-card{background:var(--card);border-radius:22px;padding:36px;box-shadow:var(--shadow);text-align:center;}
+  .ring{width:150px;height:150px;margin:6px auto 10px;position:relative;}
+  .ring svg{transform:rotate(-90deg);}
+  .ring .rtext{position:absolute;inset:0;display:flex;flex-direction:column;align-items:center;justify-content:center;}
+  .ring .rtext .pct{font-size:38px;font-weight:700;letter-spacing:-1px;}
+  .ring .rtext .sc{font-size:13px;color:var(--sub);}
+  .verdict{font-size:26px;font-weight:700;margin:6px 0 2px;}
+  .verdict.pass{color:var(--green);}
+  .verdict.fail{color:var(--red);}
+  .review-item{background:var(--card);border-radius:14px;padding:16px 18px;box-shadow:var(--shadow);margin-bottom:10px;text-align:left;border-left:4px solid var(--red);}
+  .review-item .q{font-weight:600;margin-bottom:6px;}
+  .review-item .a{font-size:14px;margin:2px 0;}
+  .review-item .a.good{color:var(--green);}
+  .review-item .a.bad{color:var(--red);}
+  .review-item .e{font-size:13px;color:var(--sub);margin-top:6px;}
+  .foot{text-align:center;color:var(--sub);font-size:12px;padding:30px 0 0;}
+  @media(max-width:640px){
+    .grid.two,.grid.topics{grid-template-columns:1fr;}
+    .hero h1{font-size:40px;}h1{font-size:32px;}
+    .nav-inner{gap:10px;}.nav-tabs button{padding:6px 9px;}
+    .qtext{font-size:20px;}
+  }
+</style>
+</head>
+<body>
+<div class="nav">
+  <div class="nav-inner">
+    <div class="brand" onclick="go('home')"><span class="dot">C</span> CalDMV Prep</div>
+    <div class="nav-tabs">
+      <button id="tab-home" onclick="go('home')">Home</button>
+      <button id="tab-learn" onclick="go('learn')">Learn</button>
+      <button id="tab-assess" onclick="go('assess')">Assess</button>
+    </div>
+  </div>
+</div>
+
+<div class="wrap">
+
+  <!-- HOME -->
+  <section id="view-home" class="view active">
+    <div class="hero">
+      <h1>Pass the California<br>driver license test.</h1>
+      <p class="tag">Learn what actually shows up on the exam, then practice with real DMV-style questions. Works fully offline.</p>
+    </div>
+    <div class="grid two">
+      <button class="card big-cta learn" onclick="go('learn')">
+        <div><div class="ic">📘</div><div class="t">Learn</div><div class="d">Seven focused cheat sheets covering the high-yield topics the DMV tests.</div></div>
+        <div class="meta">Start learning →</div>
+      </button>
+      <button class="card big-cta assess" onclick="go('assess')">
+        <div><div class="ic">✅</div><div class="t">Assess</div><div class="d">Take a full 36-question mock exam or drill a single topic. Instant feedback.</div></div>
+        <div class="meta">Take a test →</div>
+      </button>
+    </div>
+    <h2>Your progress</h2>
+    <div class="summary" id="home-stats"></div>
+    <p class="muted" style="font-size:13px;margin-top:18px;">Real exam (age 18+): 36 questions, 30 correct to pass (83%). All answers verified against the official California Driver's Handbook.</p>
+  </section>
+
+  <!-- LEARN LIST -->
+  <section id="view-learn" class="view">
+    <button class="back" onclick="go('home')">‹ Home</button>
+    <h1>Learn</h1>
+    <p class="lead">High-yield topics, distilled from the handbook. Read a topic, then quiz yourself on it.</p>
+    <div class="grid topics" id="learn-grid"></div>
+  </section>
+
+  <!-- LEARN DETAIL -->
+  <section id="view-topic" class="view">
+    <button class="back" onclick="go('learn')">‹ All topics</button>
+    <div id="topic-body" class="sheet"></div>
+    <div style="margin-top:26px;display:flex;gap:12px;flex-wrap:wrap;">
+      <button class="btn" id="topic-quiz-btn">Quiz this topic →</button>
+      <button class="btn gray" onclick="go('learn')">Back to topics</button>
+    </div>
+  </section>
+
+  <!-- ASSESS MENU -->
+  <section id="view-assess" class="view">
+    <button class="back" onclick="go('home')">‹ Home</button>
+    <h1>Assess</h1>
+    <p class="lead">Test yourself the way the DMV does. Every question gives you the correct answer and a short explanation.</p>
+    <button class="card" style="background:linear-gradient(135deg,#eafaf0,#f4fef8);" onclick="startMock()">
+      <div class="ic">🏁</div>
+      <div class="t">Full Mock Exam</div>
+      <div class="d">36 random questions, just like the real Class C test. Score 30+ to pass.</div>
+      <div class="meta" id="mock-best">Start mock exam →</div>
+    </button>
+    <h3>Practice by topic</h3>
+    <div class="grid topics" id="assess-grid"></div>
+  </section>
+
+  <!-- QUIZ -->
+  <section id="view-quiz" class="view">
+    <button class="back" onclick="quitQuiz()">‹ Quit</button>
+    <div id="quiz-title" class="muted" style="font-weight:600;margin-top:6px;"></div>
+    <div class="qtop">
+      <div class="bar"><i id="quiz-bar"></i></div>
+      <div class="qcount" id="quiz-count"></div>
+    </div>
+    <div class="qcard">
+      <div class="qtext" id="quiz-q"></div>
+      <div class="opts" id="quiz-opts"></div>
+      <div class="explain" id="quiz-explain"></div>
+      <div class="qfoot">
+        <div class="qcount" id="quiz-score"></div>
+        <button class="btn" id="quiz-next" style="display:none;" onclick="nextQ()">Next →</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- RESULTS -->
+  <section id="view-result" class="view">
+    <div class="result-card">
+      <div class="ring" id="res-ring"></div>
+      <div class="verdict" id="res-verdict"></div>
+      <div class="muted" id="res-sub"></div>
+      <div style="margin-top:22px;display:flex;gap:12px;justify-content:center;flex-wrap:wrap;">
+        <button class="btn" id="res-retry">Try again</button>
+        <button class="btn gray" onclick="go('assess')">Back to Assess</button>
+      </div>
+    </div>
+    <div id="res-review"></div>
+  </section>
+
+  <div class="foot">CalDMV Prep · Study aid only — not affiliated with the California DMV. Verify current rules at dmv.ca.gov.</div>
+</div>
+
+<script>
+/* ---------------- DATA ---------------- */
+const SECTIONS = [
+  {id:"signs",  name:"Signs & Signals",        ic:"🚦", blurb:"Traffic lights, sign shapes & colors, curb colors, signaling."},
+  {id:"row",    name:"Right-of-Way",           ic:"🤝", blurb:"Intersections, pedestrians, emergency vehicles, roundabouts."},
+  {id:"speed",  name:"Speed Limits",           ic:"⏱️", blurb:"Basic speed law, school zones, blind intersections, freeways."},
+  {id:"lanes",  name:"Lanes & Sharing",        ic:"🛣️", blurb:"Passing, lane lines, carpool lanes, bikes & motorcycles."},
+  {id:"parking",name:"Parking",                ic:"🅿️", blurb:"Colored curbs, hills, distances, double parking."},
+  {id:"dui",    name:"Alcohol, Drugs & DUI",   ic:"🚫", blurb:"BAC limits, implied consent, open container, medications."},
+  {id:"safe",   name:"Safe Driving & Emergencies", ic:"🛟", blurb:"Following distance, seatbelts, child seats, collisions."}
+];
+
+const SHEETS = {
+signs:`<h1>Signs & Signals</h1>
+<div class="keyfact">⭐ <b>Most tested:</b> flashing lights, sign shapes, curb colors, and how far ahead to signal.</div>
+<h3>Traffic lights</h3><ul>
+<li><b>Steady yellow:</b> the light is about to turn red — <span class="pill">stop if you can do so safely</span>.</li>
+<li><b>Flashing yellow:</b> slow down and proceed with <b>caution</b>.</li>
+<li><b>Flashing red:</b> treat exactly like a <b>STOP sign</b> — stop, then go when safe.</li>
+<li><b>Red arrow:</b> stop — no turn in that direction until it turns green.</li></ul>
+<h3>Sign shapes tell you the meaning</h3><ul>
+<li><b>Octagon (8 sides):</b> always STOP.</li>
+<li><b>Triangle (point down):</b> YIELD.</li>
+<li><b>Yellow diamond:</b> warning (curve, merge, hazard ahead).</li>
+<li><b>Pennant (pointed, on the left):</b> No Passing zone.</li>
+<li><b>Orange:</b> construction / road work — expect workers and equipment.</li></ul>
+<h3>Curb colors</h3><ul>
+<li><b>White:</b> stop only briefly to pick up / drop off passengers or mail.</li>
+<li><b>Green:</b> parking allowed for a <b>limited time</b>.</li>
+<li><b>Yellow:</b> loading zone — stop only long enough to load/unload.</li>
+<li><b>Red:</b> <span class="pill">no</span> stopping, standing, or parking.</li>
+<li><b>Blue:</b> disabled parking only (placard or plate required).</li></ul>
+<h3>Signaling</h3><ul>
+<li>Signal at least <b>100 feet</b> before turning.</li>
+<li>Signal at least <b>5 seconds</b> before changing lanes on a freeway.</li>
+<li>Both turn signals flashing on a car ahead = <b>hazard lights</b> (trouble ahead).</li></ul>`,
+
+row:`<h1>Right-of-Way</h1>
+<div class="keyfact">⭐ <b>Rule of thumb:</b> right-of-way is something you <i>give</i>, never take. When unsure, yield.</div>
+<h3>At intersections</h3><ul>
+<li><b>Four-way stop, arrive together:</b> the car <b>on the right</b> goes first.</li>
+<li><b>Uncontrolled intersection, arrive together:</b> yield to the car <b>on your right</b>.</li>
+<li><b>Turning left:</b> yield to oncoming traffic and pedestrians close enough to be a hazard.</li>
+<li><b>Entering from a driveway or alley:</b> yield to all traffic and pedestrians already there.</li></ul>
+<h3>Pedestrians</h3><ul>
+<li>Yield at <b>marked and unmarked</b> crosswalks.</li>
+<li>People using a <b>white cane or guide dog</b> get the right-of-way <b>at all times</b>.</li></ul>
+<h3>Emergency vehicles</h3><ul>
+<li>Siren or flashing lights approaching: pull to the <b>right edge</b> of the road and <b>stop</b> until it passes.</li>
+<li>A traffic officer's directions <b>override</b> signals and signs — do what they say.</li></ul>
+<h3>Roundabouts & mountain roads</h3><ul>
+<li><b>Roundabout:</b> drive counterclockwise and <b>yield to traffic already in the circle</b>.</li>
+<li><b>Narrow mountain road:</b> the vehicle heading <b>uphill</b> has the right-of-way; the downhill vehicle backs up.</li></ul>`,
+
+speed:`<h1>Speed Limits</h1>
+<div class="keyfact">⭐ <b>Memorize these numbers.</b> They come up almost every test: 15 · 25 · basic speed law.</div>
+<h3>The Basic Speed Law</h3><ul>
+<li>Never drive faster than is <b>safe for current conditions</b> — even if you're under the posted limit.</li>
+<li>Slow down for rain, fog, traffic, or a curve regardless of the sign.</li></ul>
+<h3>15 mph</h3><ul>
+<li>At a <b>blind intersection</b> (can't see 100 ft) with no signs.</li>
+<li>In an <b>alley</b>.</li>
+<li>Within <b>100 feet</b> of a railroad crossing where you can't see 400 ft down the tracks.</li></ul>
+<h3>25 mph</h3><ul>
+<li>In a <b>school zone</b> when children are present (unless otherwise posted).</li>
+<li>In residential and business districts (unless otherwise posted).</li></ul>
+<h3>Freeways</h3><ul>
+<li>Merge onto a freeway at <b>or near the speed of traffic</b> — don't stop or crawl on the ramp.</li>
+<li>Driving <b>too slowly</b> and blocking normal traffic flow is against the law.</li></ul>`,
+
+lanes:`<h1>Lanes & Sharing the Road</h1>
+<div class="keyfact">⭐ <b>Line colors matter:</b> broken = you may cross when safe; solid = stay put.</div>
+<h3>Lane lines & passing</h3><ul>
+<li><b>Broken (dashed) yellow line on your side:</b> you may pass when it's safe and clear.</li>
+<li><b>Solid double yellow:</b> do <span class="pill">not</span> cross to pass (you may cross only to turn left into a driveway).</li>
+<li>Passing by driving <b>off the paved road</b> is never legal.</li>
+<li>Before changing lanes, <b>turn your head</b> and check your blind spot — mirrors aren't enough.</li></ul>
+<h3>Sharing with others</h3><ul>
+<li><b>Motorcycles:</b> look twice — they're small and <b>hard to see</b>.</li>
+<li><b>Bicyclists:</b> give at least <b>3 feet</b> when passing; they have the same rights as drivers.</li>
+<li>Turning right across a bike lane: signal, check, then <b>merge into the bike lane</b> before the corner.</li>
+<li><b>Slow-moving vehicle</b> followed by <b>5 or more</b> cars must pull over to let them pass.</li></ul>
+<h3>Other rules</h3><ul>
+<li><b>Carpool (HOV) lanes:</b> you need the <b>minimum passengers</b> shown on the sign.</li>
+<li>A U-turn where two left-turn lanes exist may start from <b>either</b> lane.</li>
+<li><b>Coasting</b> in neutral downhill is illegal; a passenger vehicle can't tow more than one trailer.</li></ul>`,
+
+parking:`<h1>Parking</h1>
+<div class="keyfact">⭐ <b>Uphill vs downhill:</b> point wheels so a rolling car drifts <i>away</i> from traffic.</div>
+<h3>Curb distance & lines</h3><ul>
+<li>Park within <b>18 inches</b> of the curb.</li>
+<li>Never park within <b>15 feet</b> of a fire hydrant.</li>
+<li>Never park on a crosswalk, in an intersection, or blocking a driveway.</li></ul>
+<h3>Parking on hills</h3><ul>
+<li><b>Facing downhill:</b> turn front wheels <b>toward the curb</b>.</li>
+<li><b>Facing uphill with a curb:</b> turn front wheels <b>away from the curb</b> (toward the street).</li>
+<li>Always set the parking brake.</li></ul>
+<h3>What's illegal</h3><ul>
+<li><b>Double parking</b> (stopping in the road beside parked cars) is illegal at <b>all times</b>.</li>
+<li>Open your door on the traffic side only when it's <b>safe</b> and don't leave it open longer than needed.</li>
+<li><b>Blue curb</b> = disabled parking only.</li></ul>`,
+
+dui:`<h1>Alcohol, Drugs & DUI</h1>
+<div class="keyfact">⭐ <b>Know the three BAC numbers cold:</b> 0.08 · 0.01 · 0.04.</div>
+<h3>Blood alcohol limits</h3><ul>
+<li><b>0.08%</b> or higher — illegal if you're <b>21 or older</b>.</li>
+<li><b>0.01%</b> or higher — illegal if you're <b>under 21</b> (zero tolerance).</li>
+<li><b>0.04%</b> or higher — illegal for <b>commercial</b> drivers.</li></ul>
+<h3>Implied consent & testing</h3><ul>
+<li>By driving in California you've <b>agreed to a chemical test</b> if lawfully arrested for DUI.</li>
+<li>You may choose a <b>blood or breath</b> test.</li>
+<li><b>Refusing</b> the test = your driving privilege is <b>suspended or revoked</b>.</li></ul>
+<h3>Drugs, medicine & open containers</h3><ul>
+<li>Driving impaired by <b>any</b> drug — even prescribed — is against the law.</li>
+<li>Sleeping pills, tranquilizers, and some cold/allergy meds can impair you and worsen alcohol's effects.</li>
+<li>Open alcohol containers are illegal in the vehicle — carry them in the <b>trunk</b>.</li></ul>`,
+
+safe:`<h1>Safe Driving & Emergencies</h1>
+<div class="keyfact">⭐ <b>The 3-second rule</b> and the reporting deadlines are near-guaranteed questions.</div>
+<h3>Space & belts</h3><ul>
+<li>Keep at least a <b>3-second</b> following distance (more in bad conditions).</li>
+<li><b>Seat belts</b> reduce injury and death — always buckle up.</li>
+<li>Children <b>under 2</b>: rear-facing seat. Under <b>8</b> (or under <b>4'9"</b>): a child restraint system.</li>
+<li>Hands at <b>9 and 3</b> o'clock on the wheel.</li></ul>
+<h3>Lights & attention</h3><ul>
+<li>Headlights on from <b>30 min after sunset to 30 min before sunrise</b>.</li>
+<li>Dim high beams within <b>500 ft</b> of oncoming traffic and <b>300 ft</b> when following.</li>
+<li>Use <b>low beams</b> in fog. Keep your eyes <b>moving</b> and scan — don't stare.</li>
+<li>Holding or texting on a phone while driving is illegal — <b>hands-free only</b>.</li></ul>
+<h3>School buses</h3><ul>
+<li><b>Flashing yellow:</b> slow down, prepare to stop.</li>
+<li><b>Flashing red:</b> <span class="pill">stop</span> until the lights stop flashing.</li></ul>
+<h3>Collisions & reporting</h3><ul>
+<li>Stop at any collision; call police/CHP if anyone is <b>injured or killed</b>.</li>
+<li>Report to DMV within <b>10 days</b> (SR 1 form) if there's injury, death, or over <b>$1,000</b> in damage — no matter who was at fault.</li>
+<li>Notify DMV within <b>5 days</b> if you sell/transfer a vehicle, and within <b>10 days</b> if you move.</li>
+<li>Sleepy? Pull over to a safe place and rest. Upset? Calm down before driving.</li></ul>`
+};
+
+/* Questions: a = index of correct option (before shuffle) */
+const Q = [
+// SIGNS & SIGNALS
+{s:"signs",q:"A steady flashing yellow traffic light means:",o:["Stop, then proceed when safe","Slow down and proceed with caution","Stop and wait for a green light"],a:1,e:"A flashing yellow light is a caution signal — slow down and cross carefully."},
+{s:"signs",q:"A flashing red traffic light means:",o:["Slow down only","The same as a STOP sign","Yield only if traffic is present"],a:1,e:"Flashing red is treated exactly like a stop sign: come to a full stop, then go when it's safe."},
+{s:"signs",q:"At a steady yellow light, you should:",o:["Speed up to beat the red","Stop if you can do so safely","Always stop instantly"],a:1,e:"Yellow warns the light is about to turn red. Stop if you can do so safely."},
+{s:"signs",q:"A curb painted red means:",o:["Loading zone","No stopping, standing, or parking","Passenger drop-off only"],a:1,e:"Red curbs prohibit stopping, standing, and parking."},
+{s:"signs",q:"A curb painted blue is reserved for:",o:["15-minute parking","Disabled persons with a placard or plate","Freight loading"],a:1,e:"Blue curbs are disabled-parking only and require a placard or special plate."},
+{s:"signs",q:"A curb painted white means:",o:["No parking at any time","Stop only long enough to pick up or drop off passengers or mail","Freight loading only"],a:1,e:"White curbs allow a brief stop to load/unload passengers or mail."},
+{s:"signs",q:"A curb painted yellow means:",o:["Passenger loading only","Stop only long enough to load or unload","Disabled parking"],a:1,e:"Yellow is a loading zone — stop only long enough to load or unload."},
+{s:"signs",q:"A curb painted green means:",o:["No parking","Parking is allowed for a limited time","Disabled parking"],a:1,e:"Green curbs permit parking for a limited time (posted on the sign or curb)."},
+{s:"signs",q:"An eight-sided (octagonal) sign always means:",o:["Yield","Stop","Do not enter"],a:1,e:"The octagon shape is reserved for STOP signs."},
+{s:"signs",q:"A downward-pointing triangular sign means:",o:["Stop","Yield","Wrong way"],a:1,e:"The inverted triangle is always a YIELD sign."},
+{s:"signs",q:"A yellow diamond-shaped sign is a:",o:["Regulatory sign","Warning sign","Guide sign"],a:1,e:"Yellow diamonds warn of hazards ahead such as curves, merges, or crossings."},
+{s:"signs",q:"You must signal at least how many feet before making a turn?",o:["50 feet","100 feet","200 feet"],a:1,e:"Signal continuously for at least 100 feet before turning."},
+{s:"signs",q:"On a freeway, you should signal at least how many seconds before changing lanes?",o:["2 seconds","5 seconds","10 seconds"],a:1,e:"Signal at least 5 seconds before changing lanes on a freeway."},
+{s:"signs",q:"Orange signs and cones on the road mean:",o:["A school zone","Construction or road work — expect workers and equipment","A recreation area"],a:1,e:"Orange means construction/maintenance. Slow down and watch for workers and slow-moving equipment."},
+{s:"signs",q:"Both the left and right turn signals flashing together on a vehicle ahead mean:",o:["The vehicle is turning both ways","A hazard or trouble ahead (hazard lights)","It is a school bus"],a:1,e:"Both signals flashing are hazard (emergency) lights, warning of a problem ahead."},
+
+// RIGHT-OF-WAY
+{s:"row",q:"At a four-way stop, if two cars arrive at exactly the same time, who goes first?",o:["The car on the left","The car on the right","The faster car"],a:1,e:"When two vehicles arrive together, yield to the driver on your right."},
+{s:"row",q:"At an intersection with no signs or lights, you arrive at the same time as a car on the cross street. You must yield to:",o:["The driver on your left","The driver on your right","Neither driver"],a:1,e:"At an uncontrolled intersection, yield to the vehicle on your right."},
+{s:"row",q:"Pedestrians using a guide dog or a white cane must be:",o:["Given the right-of-way at corners only","Given the right-of-way at all times","Told when to cross"],a:1,e:"Always yield to pedestrians using a guide dog or white cane."},
+{s:"row",q:"When an emergency vehicle approaches with siren and lights, you must:",o:["Speed up to clear the way","Pull to the right edge of the road and stop","Stop immediately where you are"],a:1,e:"Pull over to the right edge and stop until the emergency vehicle passes."},
+{s:"row",q:"In a roundabout you should:",o:["Stop inside the circle to let others enter","Drive counterclockwise and yield to traffic already in the circle","Change lanes whenever you like"],a:1,e:"Yield to vehicles already circulating, then enter and drive counterclockwise."},
+{s:"row",q:"When making a left turn, you must yield to:",o:["Only pedestrians","Oncoming traffic and pedestrians close enough to be a hazard","No one if your light is green"],a:1,e:"A green light doesn't give you the right-of-way to turn left across oncoming traffic — you must yield."},
+{s:"row",q:"Two vehicles meet on a steep, narrow mountain road and neither can pass. Who yields?",o:["The vehicle heading uphill","The vehicle heading downhill","The larger vehicle"],a:1,e:"The downhill vehicle must yield and back up; the uphill vehicle has the right-of-way."},
+{s:"row",q:"If the driver ahead of you has stopped at a crosswalk, you should:",o:["Change lanes and pass carefully","Stop, then proceed when it is safe","Tap your horn"],a:1,e:"They may be yielding to a pedestrian you can't see. Stop, then go when safe."},
+{s:"row",q:"A traffic officer directs you to go, but the light is red. You should:",o:["Wait for the green light","Do as the officer directs","Report the officer"],a:1,e:"An officer's directions override signals and signs."},
+{s:"row",q:"You must yield to pedestrians:",o:["Only in marked crosswalks","At both marked and unmarked crosswalks","Only when they wave you down"],a:1,e:"Pedestrians have the right-of-way at marked and unmarked crosswalks."},
+{s:"row",q:"When entering a road from a driveway or alley, you must:",o:["Take the right-of-way","Yield to vehicles and pedestrians already on the road","Honk and proceed"],a:1,e:"Vehicles and pedestrians already on the roadway have the right-of-way."},
+
+// SPEED
+{s:"speed",q:"At a blind intersection with no STOP or YIELD sign, the speed limit is:",o:["15 mph","20 mph","25 mph"],a:0,e:"The limit at a blind intersection (can't see 100 ft) is 15 mph."},
+{s:"speed",q:"When children are outside near a school, the speed limit is (unless otherwise posted):",o:["20 mph","25 mph","30 mph"],a:1,e:"School zones are 25 mph when children are present, unless a lower limit is posted."},
+{s:"speed",q:"Within 100 feet of a railroad crossing where you can't see 400 feet down the tracks, the speed limit is:",o:["10 mph","15 mph","25 mph"],a:1,e:"The limit is 15 mph at such uncontrolled railroad crossings."},
+{s:"speed",q:"The speed limit in an alley is:",o:["10 mph","15 mph","20 mph"],a:1,e:"The speed limit in any alley is 15 mph."},
+{s:"speed",q:"California's Basic Speed Law requires that you:",o:["Always drive exactly the posted limit","Never drive faster than is safe for current conditions","Match the speed of freeway traffic"],a:1,e:"You must never drive faster than is safe for road, traffic, and weather conditions — even below the posted limit."},
+{s:"speed",q:"When entering a freeway from an on-ramp, you should be driving:",o:["About 10 mph slower than traffic","At or near the speed of freeway traffic","At the posted minimum only"],a:1,e:"Match your speed to freeway traffic and merge into a gap."},
+{s:"speed",q:"Driving so slowly that you block the normal flow of traffic is:",o:["Every driver's right","Against the law","Legal but unwise"],a:1,e:"Driving too slowly and impeding traffic (without a safety reason) is illegal."},
+{s:"speed",q:"In a residential or business district, the speed limit is usually (unless posted otherwise):",o:["20 mph","25 mph","35 mph"],a:1,e:"The default limit in residential and business districts is 25 mph."},
+{s:"speed",q:"When the road is wet from rain, you should:",o:["Keep driving the posted limit","Reduce your speed","Speed up to spend less time in the rain"],a:1,e:"Wet roads reduce traction — slow down below the posted limit if needed."},
+
+// LANES & SHARING
+{s:"lanes",q:"You may cross a broken (dashed) yellow line to pass when:",o:["Never","It is safe and the road ahead is clear","Only at an intersection"],a:1,e:"A broken yellow line on your side means passing is allowed when safe and clear."},
+{s:"lanes",q:"You may NOT cross a solid double yellow line in the center of the road to:",o:["Turn left into a driveway","Overtake and pass another vehicle","Enter a two-way left-turn lane"],a:1,e:"Solid double yellow lines prohibit passing. You may cross only to turn left into or out of a driveway."},
+{s:"lanes",q:"Driving off the paved road to pass another vehicle is:",o:["Allowed if the vehicle ahead is turning left","Not legal under any conditions","Allowed on two-lane roads"],a:1,e:"Passing on the unpaved shoulder is never legal."},
+{s:"lanes",q:"The best way to be sure a lane is clear before moving into it is to:",o:["Check your side mirror only","Turn your head and look over your shoulder","Glance at the rear-view mirror"],a:1,e:"Mirrors have blind spots — turn your head and look before changing lanes."},
+{s:"lanes",q:"You should look carefully for motorcycles before changing lanes because they:",o:["Have the right-of-way","Are small and hard to see","Always speed"],a:1,e:"Motorcycles are easy to miss because of their small size — look twice."},
+{s:"lanes",q:"To use a carpool (HOV) lane during its posted hours, you must:",o:["Drive a van or bus","Have the minimum number of passengers shown on the sign","Have your headlights on"],a:1,e:"HOV lanes require the minimum number of occupants posted on the sign."},
+{s:"lanes",q:"A slow-moving vehicle must pull over to let others pass when it is followed by:",o:["3 vehicles","4 vehicles","5 or more vehicles"],a:2,e:"When 5 or more vehicles are lined up behind, a slow driver must pull over where safe."},
+{s:"lanes",q:"When passing a bicyclist, you must:",o:["Honk to warn them","Give at least 3 feet of space","Pass as quickly as possible"],a:1,e:"California's Three Feet for Safety law requires at least 3 feet of clearance when passing a bicyclist."},
+{s:"lanes",q:"You want to turn right and there is a bike lane. After signaling and checking, you should:",o:["Turn from the regular lane, staying out of the bike lane","Merge into the bike lane before making the turn","Speed up to pass any cyclists first"],a:1,e:"Drivers must merge into the bike lane (up to 200 ft before the corner) before turning right."},
+{s:"lanes",q:"Coasting downhill with the gearshift in neutral is:",o:["Recommended to save gas","Against the law","Fine on highways"],a:1,e:"Coasting in neutral removes engine braking and is illegal."},
+{s:"lanes",q:"Where a left turn may be made from either of two lanes, a U-turn may be started from:",o:["Only the far-left lane","Either of the two left-turn lanes","Any open lane"],a:1,e:"You may begin the U-turn from either of the two left-turn lanes."},
+{s:"lanes",q:"A passenger vehicle may not tow:",o:["One trailer","More than one trailer","A boat"],a:1,e:"A passenger vehicle may pull only one trailer — towing two is not allowed."},
+
+// PARKING
+{s:"parking",q:"When you finish parallel parking, your wheels should be no more than how far from the curb?",o:["12 inches","18 inches","24 inches"],a:1,e:"Park within 18 inches of the curb when parallel parking."},
+{s:"parking",q:"\"Double parking\" — stopping in the road beside parked cars — is:",o:["Legal for deliveries","Illegal at all times","Legal while you wait in the car"],a:1,e:"Double parking is prohibited at all times."},
+{s:"parking",q:"When parking facing downhill, turn your front wheels:",o:["Toward the curb","Away from the curb","Straight ahead"],a:0,e:"Facing downhill, turn wheels toward the curb so a rolling car is stopped by the curb."},
+{s:"parking",q:"When parking facing uphill next to a curb, turn your front wheels:",o:["Toward the curb","Away from the curb (toward the street)","Straight ahead"],a:1,e:"Facing uphill with a curb, turn wheels away from the curb so the car rolls back into the curb."},
+{s:"parking",q:"You may open your car door on the traffic side:",o:["Any time while parked","Only when it is safe, and not longer than needed","Only to exit, never to enter"],a:1,e:"Open a traffic-side door only when it's safe and don't leave it open longer than necessary."},
+{s:"parking",q:"You may not park within how many feet of a fire hydrant?",o:["10 feet","15 feet","25 feet"],a:1,e:"Keep at least 15 feet of clearance from a fire hydrant."},
+{s:"parking",q:"You may never park:",o:["In a marked crosswalk or within an intersection","On any residential street","In a driveway you own"],a:0,e:"Parking on a crosswalk or within an intersection is prohibited."},
+
+// DUI
+{s:"dui",q:"For a driver 21 or older, it is illegal to drive with a blood alcohol concentration (BAC) of:",o:["0.05% or more","0.08% or more","0.10% or more"],a:1,e:"The legal limit for drivers 21 and older is 0.08%."},
+{s:"dui",q:"For a driver under 21, it is illegal to drive with a BAC of:",o:["0.01% or more","0.05% or more","0.08% or more"],a:0,e:"California has zero tolerance for under-21 drivers: 0.01% or higher is illegal."},
+{s:"dui",q:"For a commercial driver, it is illegal to drive with a BAC of:",o:["0.01% or more","0.04% or more","0.08% or more"],a:1,e:"Commercial drivers are held to a stricter 0.04% limit."},
+{s:"dui",q:"California's \"implied consent\" law means that by driving you have agreed to:",o:["Never drink alcohol","Take a chemical test for alcohol/drugs if lawfully arrested","Show ID to any driver"],a:1,e:"Driving in California means you've consented to chemical testing if lawfully arrested for DUI."},
+{s:"dui",q:"If you are arrested for DUI and refuse to take a chemical test:",o:["You pay a small fine only","Your driving privilege will be suspended or revoked","Nothing happens"],a:1,e:"Refusing the test leads to suspension or revocation of your driving privilege."},
+{s:"dui",q:"Driving under the influence of a drug that impairs you is:",o:["Legal if it's prescribed","Against the law","Legal for cold medicine"],a:1,e:"It's illegal to drive impaired by any drug — even prescribed or over-the-counter medicine."},
+{s:"dui",q:"An open container of alcohol in your vehicle is illegal except when it is:",o:["On the back seat","In the trunk","In the glove compartment"],a:1,e:"Open containers must be kept in the trunk (or an area not occupied by people)."},
+{s:"dui",q:"Sleeping pills, tranquilizers, and some cold or allergy medicines:",o:["Have no effect on driving","May impair your driving and worsen alcohol's effects","Improve your alertness"],a:1,e:"These medications can impair driving and increase the negative effects of alcohol."},
+{s:"dui",q:"If an officer asks you to take a chemical test for alcohol, you may choose:",o:["A blood or breath test","To recite the alphabet","A field sobriety test instead"],a:0,e:"You may choose a blood or breath test."},
+
+// SAFE DRIVING & EMERGENCIES
+{s:"safe",q:"In good conditions, a safe following distance is at least:",o:["1 second","3 seconds","Half a car length"],a:1,e:"Use the 3-second rule — more distance in poor conditions."},
+{s:"safe",q:"Safety belts have been proven to:",o:["Sometimes trap drivers in a crash","Reduce the risk of injury and death","Make steering harder"],a:1,e:"Seat belts significantly reduce injuries and deaths in collisions."},
+{s:"safe",q:"Children under 2 years old must ride in:",o:["A forward-facing seat","A rear-facing child restraint","A booster seat"],a:1,e:"Children under 2 must be in a rear-facing child passenger restraint (unless they exceed the seat's height/weight limits)."},
+{s:"safe",q:"A child must use a child passenger restraint system until they are:",o:["6 years old","8 years old, or at least 4 feet 9 inches tall","10 years old"],a:1,e:"Children must use a restraint system until age 8 or until they reach 4'9\"."},
+{s:"safe",q:"You must turn on your headlights:",o:["Only when it rains","From 30 minutes after sunset to 30 minutes before sunrise","Only on the freeway"],a:1,e:"Headlights are required from 30 min after sunset until 30 min before sunrise, and whenever visibility is poor."},
+{s:"safe",q:"You must dim your high beams to low beams within how many feet of an oncoming vehicle?",o:["200 feet","500 feet","1,000 feet"],a:1,e:"Dim high beams within 500 feet of an oncoming vehicle (and 300 feet when following one)."},
+{s:"safe",q:"If you become sleepy while driving, the best thing to do is:",o:["Increase your speed to stay alert","Turn the radio up loud","Pull over to a safe place and rest"],a:2,e:"The only real cure for drowsiness is rest — pull over somewhere safe."},
+{s:"safe",q:"If you become angry or upset, you should:",o:["Go for a drive to forget it","Calm down before driving","Drive to release the tension"],a:1,e:"Strong emotions impair judgment — cool off before getting behind the wheel."},
+{s:"safe",q:"You must report a collision to the DMV within 10 days when:",o:["Only if it was your fault","There is injury, death, or over $1,000 in property damage","Only if you were uninsured"],a:1,e:"File an SR 1 within 10 days if anyone was injured or killed, or damage exceeds $1,000."},
+{s:"safe",q:"You must file the SR 1 collision report with the DMV:",o:["Only if you were at fault","Regardless of who was at fault","Only if a police officer asks"],a:1,e:"You (or your insurer) must file whether or not you caused the collision — even on private property."},
+{s:"safe",q:"How many days do you have to notify the DMV when you sell or transfer your vehicle?",o:["5 days","10 days","20 days"],a:0,e:"The seller must notify the DMV within 5 days of selling or transferring a vehicle."},
+{s:"safe",q:"When you move, you must give the DMV your new address within:",o:["5 days","10 days","30 days"],a:1,e:"Report an address change to the DMV within 10 days."},
+{s:"safe",q:"Holding or texting on a cell phone while driving is:",o:["Allowed at red lights","Illegal — you may only use it hands-free","Allowed on the freeway"],a:1,e:"Handheld phone use and texting are illegal while driving; only hands-free operation is permitted."},
+{s:"safe",q:"The safest way to watch the road is to:",o:["Stare at the vehicle directly ahead","Keep your eyes moving and scan your surroundings","Focus only on the center line"],a:1,e:"Scan continuously — keep your eyes moving to spot hazards early."},
+{s:"safe",q:"When driving in fog, you should use your:",o:["High beams","Low beams","Parking lights only"],a:1,e:"High beams reflect off fog and reduce visibility. Use low beams."},
+{s:"safe",q:"When a school bus ahead shows flashing RED lights, you must:",o:["Slow to 10 mph","Stop until the red lights stop flashing","Pass carefully on the left"],a:1,e:"Stop and remain stopped until the flashing red lights are turned off."},
+{s:"safe",q:"When a school bus ahead starts flashing YELLOW warning lights, you should:",o:["Stop immediately and stay stopped","Slow down and prepare to stop","Pass on the left"],a:1,e:"Yellow flashers warn the bus is about to stop — slow down and prepare to stop."},
+{s:"safe",q:"Repeated convictions for traffic violations can lead to:",o:["A warning letter only","Suspension of your driving privilege by the DMV","No consequences"],a:1,e:"The DMV can suspend the driving privilege of repeat traffic offenders."},
+{s:"safe",q:"It is illegal to enter an intersection when:",o:["The light is yellow","You cannot get all the way across without blocking cross traffic","There is a car behind you"],a:1,e:"Don't 'block the box' — never enter unless you can clear the intersection."},
+{s:"safe",q:"If you are the first to stop at a collision scene, you should pull over:",o:["Past the scene, off the road","In the middle of the road","Right next to the wrecked vehicles"],a:0,e:"Pull off the road just past the scene so you don't block traffic or create another hazard."},
+{s:"safe",q:"If you are involved in a collision, you must:",o:["Leave if there's no injury","Stop, and notify police or CHP if anyone is injured or killed","Only exchange info if it was your fault"],a:1,e:"Always stop; if there's injury or death, notify the police or CHP."},
+{s:"safe",q:"Before backing up, you should:",o:["Rely on your mirrors","Turn your head and look behind the vehicle","Honk and reverse"],a:1,e:"Mirrors don't show everything behind you — turn and look before backing."},
+{s:"safe",q:"If your brakes suddenly fail, you should:",o:["Turn off the engine right away","Pump the pedal, shift to a lower gear, and use the parking brake","Steer toward oncoming traffic"],a:1,e:"Pump the brakes, downshift for engine braking, and gradually apply the parking brake."},
+{s:"safe",q:"You should place your hands on the steering wheel at:",o:["12 o'clock","9 and 3 o'clock","6 o'clock"],a:1,e:"The 9-and-3 position gives the best control and is safest with airbags."},
+
+// ADDITIONAL VERIFIED
+{s:"signs",q:"A red circle with a red slash through a symbol means:",o:["A warning of a hazard","The action shown is not allowed","Guidance to a service"],a:1,e:"A red circle-and-slash always means the pictured action is prohibited."},
+{s:"row",q:"At a T-intersection, the driver on the road that ends (the top of the T) must:",o:["Go first","Yield to traffic on the through road","Stop only if a sign is posted"],a:1,e:"Traffic on the through road has the right-of-way; the ending road must yield."},
+{s:"speed",q:"The maximum speed limit on most California freeways is:",o:["55 mph","65 mph","75 mph"],a:1,e:"The maximum is 65 mph on most freeways (up to 70 mph only where specifically posted)."},
+{s:"speed",q:"As you approach a curve, you should:",o:["Speed up through it","Slow down before entering the curve","Brake hard in the middle of it"],a:1,e:"Reduce your speed before the curve, then accelerate gently through it."},
+{s:"lanes",q:"On a multi-lane freeway, the far-left lane is generally intended for:",o:["Slow-moving traffic","Passing and faster-moving traffic","Vehicles about to exit"],a:1,e:"Keep right except to pass — the left lane is for passing and faster traffic."},
+{s:"lanes",q:"The correct order to change lanes safely is:",o:["Move over, then signal","Signal, check mirrors and your blind spot, then move","Rely on other drivers to make room"],a:1,e:"Signal first, check mirrors and turn your head to check the blind spot, then move when clear."},
+{s:"parking",q:"When you leave your parked vehicle, you should:",o:["Leave the engine running","Turn off the engine, set the parking brake, and take the key","Leave it in neutral"],a:1,e:"Always shut off the engine, set the parking brake, and take your key."},
+{s:"parking",q:"On a one-way street, you should park:",o:["Facing against traffic","In the direction traffic is flowing","Only on the left side"],a:1,e:"Park in the same direction traffic flows on that side of the street."},
+{s:"parking",q:"You may not stop or park:",o:["On a bridge or in a tunnel","On a wide residential street","In a shopping-center lot"],a:0,e:"Stopping or parking on bridges and in tunnels is prohibited."},
+{s:"dui",q:"A DUI conviction can result in:",o:["A warning for a first offense","Fines, license suspension, and possible jail time","No penalty if no one was hurt"],a:1,e:"Even a first DUI can bring fines, license suspension, and jail time."},
+{s:"dui",q:"The best way to avoid driving under the influence is to:",o:["Drink only beer or wine","Use a designated driver, rideshare, or taxi if you've been drinking","Wait about 20 minutes before driving"],a:1,e:"Plan ahead — a sober designated driver or a ride is the only reliable option."},
+{s:"safe",q:"You should adjust your seat and mirrors:",o:["After you start driving","Before you start driving","Only on long trips"],a:1,e:"Set up your seat and mirrors before you begin driving, never while moving."},
+{s:"safe",q:"If your vehicle begins to hydroplane on a wet road, you should:",o:["Brake hard immediately","Ease off the gas and keep the steering wheel steady","Accelerate to regain grip"],a:1,e:"Take your foot off the gas and hold the wheel steady until the tires regain traction — don't brake hard."}
+];
+
+/* ---------------- STATE + STORAGE ---------------- */
+const KEY="caldmv_progress_v1";
+let store = load();
+function load(){try{return JSON.parse(localStorage.getItem(KEY))||{}}catch(e){return {}}}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(store))}catch(e){}}
+
+function shuffle(a){a=a.slice();for(let i=a.length-1;i>0;i--){const j=Math.floor(Math.random()*(i+1));[a[i],a[j]]=[a[j],a[i]];}return a;}
+
+/* ---------------- ROUTER ---------------- */
+const views=["home","learn","topic","assess","quiz","result"];
+function go(v){
+  views.forEach(x=>document.getElementById("view-"+x).classList.toggle("active",x===v));
+  ["home","learn","assess"].forEach(t=>{
+    const on = (v===t)||(v==="topic"&&t==="learn")||((v==="quiz"||v==="result")&&t==="assess");
+    document.getElementById("tab-"+t).classList.toggle("active",on);
+  });
+  window.scrollTo(0,0);
+  if(v==="home")renderHome();
+  if(v==="learn")renderLearn();
+  if(v==="assess")renderAssess();
+}
+
+/* ---------------- HOME ---------------- */
+function renderHome(){
+  const done = Object.keys(store).filter(k=>k.startsWith("sec_")).length;
+  const mock = store.mock_best;
+  const el=document.getElementById("home-stats");
+  el.innerHTML=`
+    <div class="stat"><div class="n">100</div><div class="l">Questions</div></div>
+    <div class="stat"><div class="n">7</div><div class="l">Topics</div></div>
+    <div class="stat"><div class="n">${done}/7</div><div class="l">Topics quizzed</div></div>
+    <div class="stat"><div class="n">${mock?mock+"/36":"—"}</div><div class="l">Best mock score</div></div>`;
+}
+
+/* ---------------- LEARN ---------------- */
+function renderLearn(){
+  document.getElementById("learn-grid").innerHTML = SECTIONS.map(s=>`
+    <button class="card" onclick="openTopic('${s.id}')">
+      <div class="ic">${s.ic}</div>
+      <div class="t">${s.name}</div>
+      <div class="d">${s.blurb}</div>
+      <div class="meta">Read topic →</div>
+    </button>`).join("");
+}
+function openTopic(id){
+  document.getElementById("topic-body").innerHTML = SHEETS[id];
+  document.getElementById("topic-quiz-btn").onclick=()=>startQuiz(id);
+  go("topic");
+}
+
+/* ---------------- ASSESS MENU ---------------- */
+function renderAssess(){
+  const mb=store.mock_best;
+  document.getElementById("mock-best").textContent = mb?`Best: ${mb}/36 · Start again →`:"Start mock exam →";
+  document.getElementById("assess-grid").innerHTML = SECTIONS.map(s=>{
+    const b=store["sec_"+s.id];
+    const cnt=Q.filter(q=>q.s===s.id).length;
+    return `<button class="card" onclick="startQuiz('${s.id}')">
+      <div class="ic">${s.ic}</div>
+      <div class="t">${s.name}</div>
+      <div class="d">${cnt} questions${b?` · best ${b.c}/${b.t}`:""}</div>
+      <div class="meta">Start quiz →</div>
+    </button>`;
+  }).join("");
+}
+
+/* ---------------- QUIZ ENGINE ---------------- */
+let quiz=null;
+function buildRound(list){
+  return list.map(item=>{
+    const opts = item.o.map((text,i)=>({text,correct:i===item.a}));
+    return {q:item.q, e:item.e, s:item.s, opts:shuffle(opts)};
+  });
+}
+function startQuiz(secId){
+  const list = Q.filter(q=>q.s===secId);
+  const sec = SECTIONS.find(s=>s.id===secId);
+  quiz={mode:"section", secId, title:sec.ic+" "+sec.name, items:buildRound(list), i:0, correct:0, wrong:[]};
+  document.getElementById("res-retry").onclick=()=>startQuiz(secId);
+  go("quiz"); renderQ();
+}
+function startMock(){
+  const items = buildRound(shuffle(Q).slice(0,36));
+  quiz={mode:"mock", title:"🏁 Full Mock Exam", items, i:0, correct:0, wrong:[]};
+  document.getElementById("res-retry").onclick=startMock;
+  go("quiz"); renderQ();
+}
+function quitQuiz(){ if(confirm("Quit this quiz? Your progress on it won't be saved.")) go("assess"); }
+
+function renderQ(){
+  const it=quiz.items[quiz.i];
+  document.getElementById("quiz-title").textContent=quiz.title;
+  document.getElementById("quiz-count").textContent=`Question ${quiz.i+1} of ${quiz.items.length}`;
+  document.getElementById("quiz-bar").style.width=((quiz.i)/quiz.items.length*100)+"%";
+  document.getElementById("quiz-score").textContent=`Score: ${quiz.correct}/${quiz.i}`;
+  document.getElementById("quiz-q").textContent=it.q;
+  document.getElementById("quiz-next").style.display="none";
+  const exp=document.getElementById("quiz-explain"); exp.className="explain"; exp.innerHTML="";
+  const letters=["A","B","C","D"];
+  document.getElementById("quiz-opts").innerHTML=it.opts.map((o,i)=>
+    `<button class="opt" data-i="${i}" onclick="answer(${i})"><span class="k">${letters[i]}</span><span>${o.text}</span></button>`).join("");
+}
+function answer(i){
+  const it=quiz.items[quiz.i];
+  if(it.answered) return;
+  it.answered=true;
+  const opts=document.querySelectorAll("#quiz-opts .opt");
+  const chosen=it.opts[i];
+  opts.forEach((btn,idx)=>{
+    btn.classList.add("locked");
+    if(it.opts[idx].correct) btn.classList.add("correct");
+    else if(idx===i) btn.classList.add("wrong");
+    else btn.classList.add("dim");
+  });
+  const exp=document.getElementById("quiz-explain");
+  if(chosen.correct){
+    quiz.correct++;
+    exp.className="explain ok show";
+    exp.innerHTML=`<span class="lbl">✓ Correct</span>${it.e}`;
+  }else{
+    const right=it.opts.find(o=>o.correct).text;
+    quiz.wrong.push({q:it.q,chosen:chosen.text,right,e:it.e});
+    exp.className="explain no show";
+    exp.innerHTML=`<span class="lbl">✗ Not quite</span>The correct answer is: <b>${right}</b>.<br>${it.e}`;
+  }
+  document.getElementById("quiz-score").textContent=`Score: ${quiz.correct}/${quiz.i+1}`;
+  const nb=document.getElementById("quiz-next");
+  nb.style.display="inline-flex";
+  nb.textContent = quiz.i===quiz.items.length-1 ? "See results →" : "Next →";
+}
+function nextQ(){
+  if(quiz.i<quiz.items.length-1){quiz.i++;renderQ();}
+  else finishQuiz();
+}
+function finishQuiz(){
+  const total=quiz.items.length, c=quiz.correct;
+  const pct=Math.round(c/total*100);
+  const pass = quiz.mode==="mock" ? c>=30 : pct>=80;
+  if(quiz.mode==="mock"){ store.mock_best=Math.max(store.mock_best||0,c); }
+  else { const prev=store["sec_"+quiz.secId]; if(!prev||c>prev.c) store["sec_"+quiz.secId]={c,t:total}; }
+  save();
+  const R=64, circ=2*Math.PI*R, col=pass?"var(--green)":"var(--red)";
+  document.getElementById("res-ring").innerHTML=
+    `<svg width="150" height="150"><circle cx="75" cy="75" r="${R}" fill="none" stroke="#e5e5ea" stroke-width="12"/>`+
+    `<circle cx="75" cy="75" r="${R}" fill="none" stroke="${col}" stroke-width="12" stroke-linecap="round" stroke-dasharray="${circ}" stroke-dashoffset="${circ*(1-c/total)}"/></svg>`+
+    `<div class="rtext"><div class="pct" style="color:${col}">${pct}%</div><div class="sc">${c} / ${total}</div></div>`;
+  const v=document.getElementById("res-verdict");
+  v.className="verdict "+(pass?"pass":"fail");
+  v.textContent = pass ? (quiz.mode==="mock"?"You passed! 🎉":"Nice work! ✅") : "Keep practicing";
+  document.getElementById("res-sub").textContent = quiz.mode==="mock"
+    ? (pass?"You'd pass the real Class C test (need 30/36).":`You need 30/36 to pass — ${30-c} more to go. Review and retry.`)
+    : (pass?"You've got a solid grip on this topic.":"Review the misses below, then try again.");
+  const rv=document.getElementById("res-review");
+  if(quiz.wrong.length){
+    rv.innerHTML=`<h3 style="margin-top:32px;">Review your misses (${quiz.wrong.length})</h3>`+
+      quiz.wrong.map(w=>`<div class="review-item"><div class="q">${w.q}</div><div class="a bad">Your answer: ${w.chosen}</div><div class="a good">Correct: ${w.right}</div><div class="e">${w.e}</div></div>`).join("");
+  } else {
+    rv.innerHTML=`<div style="text-align:center;margin-top:26px;font-size:17px;" class="muted">Perfect round — no misses. 👏</div>`;
+  }
+  go("result");
+}
+
+/* init */
+renderHome();
+</script>
+</body>
+</html>
